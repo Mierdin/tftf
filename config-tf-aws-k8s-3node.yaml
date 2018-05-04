@@ -1,0 +1,46 @@
+
+ #This is the ansible config from the stack
+provider_config:
+  aws:
+    ec2_access_key: "${ACCESS_KEY}"
+    ec2_secret_key: "${SECRET_KEY}"
+    ssh_public_key: /root/.ssh/id_rsa.pub
+    ssh_private_key: /root/.ssh/id_rsa
+    ssh_user: centos
+    instance_type: "${INSTANCE_TYPE}"
+    image: "${IMAGE_ID}"
+    region: "${REGION}"
+    security_group: "${SECURITY_GROUP}"
+    vpc_subnet_id: "${SUBNET}"
+    assign_public_ip: yes
+    volume_size: 50
+    key_pair: "tf-${STACK_NAME}"
+instances:
+  ${STACK_NAME}_controller:
+    provider: aws
+    instance_type: t2.xlarge
+    roles:
+      config_database:
+      config:
+      control:
+      analytics_database:
+      analytics:
+      webui:
+      kubemanager:
+      k8s_master:
+  ${STACK_NAME}_compute1:
+    provider: aws
+    instance_type: t2.large
+    roles:
+      vrouter:
+      k8s_node:
+  ${STACK_NAME}_compute2:
+    provider: aws
+    instance_type: t2.large
+    roles:
+      vrouter:
+      k8s_node:
+contrail_configuration:
+  CONTAINER_REGISTRY: opencontrailnightly
+  CONTRAIL_VERSION: master-75
+  UPGRADE_KERNEL: true
