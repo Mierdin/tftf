@@ -7,7 +7,7 @@ AWSTemplateFormatVersion: '2010-09-09'
 Description: >
   Stack to deploy Contrail with Openstack
 
-  EDITED by Matt Oswalt to provide more defaults
+  EDITED by Matt Oswalt to provide more opinionated defaults
   CONTACT: Bartosz Kupidura <bartosz.kupidura@gmail.com>
 
 Parameters:
@@ -56,7 +56,8 @@ Parameters:
   AnsibleDeployerCommit:
     Description: Ansible deployer commit ID (Default = master)
     Type: String
-    Default: ceb29b0b2eb0f63409cf6098176258d793b84736
+    # Default: ceb29b0b2eb0f63409cf6098176258d793b84736
+    Default: master
 
   InstallTungstenFabric:
     Description: Install Contrail after deployment (Default = No)
@@ -69,7 +70,7 @@ Parameters:
   AnsibleDeployerConfigUrl:
     Description: URL to ansible deployer config file
     Type: String
-    Default: https://s3.eu-west-2.amazonaws.com/tungstenfabric-templates/config-tf-aws-k8s-3node.yaml
+    Default: https://raw.githubusercontent.com/Mierdin/tftf/master/config-tf-aws-k8s-3node.yaml
 
 Mappings:
   AWSInstanceType2Arch:
@@ -268,6 +269,8 @@ Resources:
               export INSTANCE_TYPE=${INSTANCE_TYPE}
               export ANSIBLE_LOG_PATH="/root/ansible.log"
 
+              hostnamectl set-hostname tf-ansible
+
               sed -i -e 's/#PermitRootLogin yes/PermitRootLogin yes/g' -e 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
               service sshd restart
               echo root:${PASSWORD} | chpasswd
@@ -285,7 +288,7 @@ Resources:
               aws ec2 import-key-pair --public-key-material file:///root/.ssh/id_rsa.pub --key-name tf-${STACK_NAME}
 
               cd /root
-              git clone https://github.com/Juniper/contrail-ansible-deployer
+              git clone https://github.com/Mierdin/contrail-ansible-deployer
               cd contrail-ansible-deployer
               git reset --hard ${CONTRAIL_DEPLOYER_COMMIT}
 
