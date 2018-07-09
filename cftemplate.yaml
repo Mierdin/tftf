@@ -105,7 +105,7 @@ Mappings:
     us-east-1:
       HVM64: ami-4bf3d731
     us-east-2:
-      HVM64: ami-e1496384
+      HVM64: ami-9c0638f9
     us-west-1:
       HVM64: ami-65e0e305
     us-west-2:
